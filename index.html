@@ -1,0 +1,360 @@
+<html>
+<head>
+  <title>Tampa Flood Hazard Map</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css" integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA==" crossorigin="">
+<!--[if lte IE 8]>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.ie.css" />
+<![endif]-->
+ <link rel="stylesheet" href="Leaflet.markercluster-1.4.1/dist/MarkerCluster.css">
+		 <link rel="stylesheet" href="Leaflet.markercluster-1.4.1/dist/MarkerCluster.Default.css">
+		  <link rel="stylesheet" href="L.Control.Sidebar.css" />
+
+<script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js" integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA==" crossorigin=""></script>
+<script
+src="https://code.jquery.com/jquery-2.1.1.min.js"
+integrity="sha256-h0cGsrExGgcZtSZ/fRz4AwV+Nn6Urh/3v3jFRQ0w9dQ="
+crossorigin="anonymous"></script>
+            
+		 <script src="Leaflet.markercluster-1.4.1/dist/leaflet.markercluster-src.js"></script>
+    <script src="L.Control.Sidebar.js"></script>
+     <style>
+    #map{ height: 100% }
+    #map2{ height: 100% }
+  </style>
+</head>
+<body>
+
+<div id="sidebar">
+  <h1> Tampa Flood Hazard Map</h1>
+    <h2>Map Description</h2>
+    <p>The City of Tampa is the largest city in Hillsborough County, is the county seat and is the third most populous city in Florida. It is located on the west coast of Florida, approximately 200 miles northwest of Miami, 180 southwest of Jacksonville, and 20 miles northeast of St. Petersburg. The population of the city represents approximately one-third of the total population of Hillsborough County ("CityofTampa", 2019). There are several causes of flooding within the city of Tampa. The most frequent type of flooding, localized flooding, is caused by rainy season thunderstorms and tropical storms ("Flooding", 2019)".
+        A Flood Zone is a geographical area that is rated to reflect the severity or type offloading in that area. </p><br>
+    
+    <h2>Tacoma City Sector Map</h2>
+    <p>The second map shows that the sector map of the Community Policing Division is comprised of four Sector. The Community Policing Division utilizes the Tacoma Crime Control System (TCCS) to coordinate proactive policing. TCCS is a system designed by the Police Department which aligns department resources to suppress crime throughout the city utilizing crime statistics and information, as well as assistance from the community.</p><br>
+    
+    <h2>Data Sources</h2>
+    <li><a href="http://gisdata-piercecowa.opendata.arcgis.com/datasets/crime-data" class="button">Crime Data</a></li>
+    <li><a href=" https://tacoma.maps.arcgis.com/home/item.html?id=6ea2d3fe0ce54fe59dbdc31217133f83" class="button">Tacoma Sector Map</a></li>
+    <li><a href=" http://gisdata-piercecowa.opendata.arcgis.com/datasets/pierce-county-boundary-polygon" class="button">Pierce County</a></li>
+    <li><a href=" http://gisdata-piercecowa.opendata.arcgis.com/datasets/police-stations" class="button">Police Station</a></li>
+    <li><a href=" https://www.arcgis.com/home/item.html?id=0a92220fabea486bad6ac928b07670cd" class="button">Tacoma City</a></li>
+    <li><a href=" https://www.arcgis.com/home/item.html?id=bba02222478c40958889930ece591e10" class="button">Washington State</a></li>
+    
+   
+    
+</div>
+  <div id="map"></div><br><br>
+  
+  <script>
+
+  // initialize the map 47.349884, -120.481768
+  var map = L.map('map').setView([27.971639, -82.481083], 11);
+  var controlLayers = L.control.layers().addTo(map);
+  var floodhazard = 'Tampa_Flood_Hazard_Area.geojson';
+  var housing = 'Housing_By_Block_Group.geojson'
+  var policesector = 'policesector.geojson'
+  var populationbyblock = 'Total_Population_By_BlockGroup.geojson'
+
+  
+  // load a tile layer
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    {
+      attribution: 'T&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+     minZoom: 1
+    }).addTo(map);
+
+// Police Station
+
+       $.getJSON("policestation.geojson",function(data){
+    // add GeoJSON layer to the map once the file is loaded
+          var policeIcon = L.icon({
+    iconUrl: 'policestationicon.png',
+    iconSize: [50,40]
+  }); 
+   var policeStationData = L.geoJson(data, {
+       onEachFeature: function(feature, policeStationLayer) {
+           policeStationLayer.bindPopup('<h4>Address:'+feature.properties.FULLADDR+'</h4><h4>Name:'+feature.properties.NAME+'</h4><h4> City: '+feature.properties.MUNICIPALI+'</h4>');
+       },
+    
+        pointToLayer: function(feature,latlng){
+	  return L.marker(latlng,{icon: policeIcon});
+    }
+        
+   });
+          var markers = L.markerClusterGroup();
+          markers.addLayer(policeStationData);
+          map.addLayer(markers);
+          controlLayers.addOverlay(policeStationData, 'Police Station');
+            });
+
+    // fire station
+            $.getJSON("Fire_Stations_City_of_Tampa.geojson",function(data){
+    // add GeoJSON layer to the map once the file is loaded
+          var fireIcon = L.icon({
+    iconUrl: 'fireicon.png',
+    iconSize: [50,40]
+  }); 
+   var fireStationData = L.geoJson(data, {
+       onEachFeature: function(feature, Fire_Stations_City_of_TampaLayer) {
+        Fire_Stations_City_of_TampaLayer.bindPopup('<h4>Address:'+feature.properties.MAPS_PUB_7+'</h4><h4>Name:'+feature.properties.MAPS_PUB_2+'</h4><h4> City: '+feature.properties.MAPS_PUB_8+'</h4>');
+       },
+    
+        pointToLayer: function(feature,latlng){
+	  return L.marker(latlng,{icon: fireIcon});
+    }
+        
+   });
+          var markers = L.markerClusterGroup();
+          markers.addLayer(fireStationData);
+          map.addLayer(markers);
+          controlLayers.addOverlay(fireStationData, 'Fire Station');
+            });
+// Hospital
+$.getJSON("Tampa_Hospitals.geojson",function(data){
+    // add GeoJSON layer to the map once the file is loaded
+          var hospitalIcon = L.icon({
+    iconUrl: 'hospitalIcon.png',
+    iconSize: [50,40]
+  }); 
+   var hospitalsData = L.geoJson(data, {
+       onEachFeature: function(feature, Tampa_HospitalsLayer) {
+        Tampa_HospitalsLayer.bindPopup('<h4>Address:'+feature.properties.ADDRESS+'</h4><h4>Name:'+feature.properties.NAME+'</h4><h4> City: '+feature.properties.CITY+'</h4>');
+       },
+    
+        pointToLayer: function(feature,latlng){
+	  return L.marker(latlng,{icon: hospitalIcon});
+    }
+        
+   });
+          var markers = L.markerClusterGroup();
+          markers.addLayer(hospitalsData);
+          map.addLayer(markers);
+          controlLayers.addOverlay(hospitalsData, 'Hospitals');
+            });
+
+// School
+
+      $.getJSON("tampaschool.geojson",function(data){
+    // add GeoJSON layer to the map once the file is loaded
+   var schools = L.geoJson(data, {
+       onEachFeature: function(feature, layer) {
+           
+           layer.bindPopup('<h4>Address:'+feature.properties.ADDR+'</h4><h4>NAME:'+feature.properties.NAME+'</h4><h4>CITY: '+feature.properties.CITY+'</h4>');
+           
+       }
+   });
+          var markers = L.markerClusterGroup();
+          markers.addLayer(schools);
+          map.addLayer(markers);
+          controlLayers.addOverlay(schools, 'Schools');
+   });
+
+     var sidebar = L.control.sidebar('sidebar', {
+            closeButton: true,
+            position: 'left'
+        });
+        map.addControl(sidebar);
+        setTimeout(function () {
+            sidebar.show();
+        }, 500);
+       
+        map.on('click', function () {
+            sidebar.hide();
+        })
+        sidebar.on('show', function () {
+            
+        });
+        sidebar.on('shown', function () {
+            
+        });
+        sidebar.on('hide', function () {
+           
+        });
+        sidebar.on('hidden', function () {
+            
+        });
+        L.DomEvent.on(sidebar.getCloseButton(), 'click', function () {
+            
+        });
+
+
+// Police Sector
+$.getJSON(policesector, function (geoJson) {
+  var policesector = L.geoJson(geoJson, {
+    style: function(feature){
+      var fillColor,
+          data = feature.properties.TPD_SECTOR;
+     if (data === "A") fillColor = "#800026";
+      else if (data === "B" ) fillColor = "#e6550d";
+      else if (data === "C" ) fillColor = "yellow";
+      else if (data === "D" ) fillColor = "black";
+      else if (data === "E" ) fillColor = "#E90A1D";
+      else if (data === "E" ) fillColor = "grey";
+      else fillColor = "#FFEDA0";  // no data
+      return { color: "white", weight: 2, dashArray: '3', fillColor: fillColor, fillOpacity: .7 };
+    },
+    onEachFeature: function( feature, layer ){
+      layer.bindPopup('<h4>Poliice Sector NAME:  '+feature.properties.TPD_SECTOR+'</h4>' )
+      }
+  }  ).addTo(map);
+  controlLayers.addOverlay(policesector, 'Police Sector');
+});
+
+ // Flood Hazard
+$.getJSON(floodhazard, function (geoJson) {
+  var floodhazard = L.geoJson(geoJson, {
+    style: function(feature){
+      var fillColor,
+          data = feature.properties.ZONE_SUBTY;
+     if (data === "FLOODWAY") fillColor = "#800026";
+      else if (data === "Coastal And Floodways" ) fillColor = "#e6550d";
+      else if (data === "AREA OF MINIMAL FLOOD HAZARD" ) fillColor = "#E31A1C";
+      else if (data === "1% Anual Chance" ) fillColor = "#3AB2FA";
+      else if (data === "0.2 PCT ANNUAL CHANCE FLOOD HAZARD" ) fillColor = "#E90A1D";
+      else fillColor = "#FFEDA0";  // no data
+      return { color: "#999", weight: 1, fillColor: fillColor, fillOpacity: .50 };
+    },
+    onEachFeature: function( feature, layer ){
+      layer.bindPopup('<h4>Flood Hazard Catagory:  '+feature.properties.ZONE_SUBTY+'</h4><h4>FEMA Catagory: '+feature.properties.FLD_ZONE+'</h4>' )
+      }
+  }  ).addTo(map);
+  controlLayers.addOverlay(floodhazard, 'Flood Hazard');
+});
+
+
+// Housing By Block
+$.getJSON(housing, function (geoJson) {
+  var housing = L.geoJson(geoJson, {
+    style: function(feature){
+      var fillColor,
+          data = feature.properties.NAMELSAD;
+     if (data === "Block Group 1") fillColor = "#800026";
+      else if (data === "Block Group 2" ) fillColor = "#e6550d";
+      else if (data === "Block Group 3" ) fillColor = "#E31A1C";
+      else if (data === "Block Group 4" ) fillColor = "#3AB2FA";
+      else if (data === "Block Group 5" ) fillColor = "#E90A1D";
+      else if (data === "Block Group 6" ) fillColor = "yellow";
+      else if (data === "Block Group 6" ) fillColor = "black";
+      else fillColor = "#FFEDA0";  // no data
+      return { color: "white", weight: 2, dashArray: '3', fillColor: fillColor, fillOpacity: .7 };
+    },
+    onEachFeature: function( feature, layer ){
+      layer.bindPopup('<h4>BLOCK NAME:  '+feature.properties.NAMELSAD+'</h4><h4>BLOCK Group Details: '+feature.properties.GEO_displa+'</h4>' )
+      }
+  }  ).addTo(map);
+  controlLayers.addOverlay(housing, 'Housing by Block');
+});
+
+// Total Population
+$.getJSON(populationbyblock, function (geoJson) {
+  var populationbyblock = L.geoJson(geoJson, {
+    style: function(feature){
+      var fillColor,
+          data = feature.properties.NAMELSAD;
+     if (data === "Block Group 1") fillColor = "#800026";
+      else if (data === "Block Group 2" ) fillColor = "#e6550d";
+      else if (data === "Block Group 3" ) fillColor = "#E31A1C";
+      else if (data === "Block Group 4" ) fillColor = "#3AB2FA";
+      else if (data === "Block Group 5" ) fillColor = "#E90A1D";
+      else if (data === "Block Group 6" ) fillColor = "yellow";
+      else if (data === "Block Group 6" ) fillColor = "black";
+      else fillColor = "#FFEDA0";  // no data
+      return { color: "white", weight: 2, dashArray: '3', fillColor: fillColor, fillOpacity: .7 };
+    },
+    onEachFeature: function( feature, layer ){
+      layer.bindPopup('<h4>BLOCK NAME:  '+feature.properties.NAMELSAD+'</h4><h4>Houisng Unit: '+feature.properties.Housing_Un+'</h4><h4>Total Population: '+feature.properties.Total_popu+'</h4>' )
+      }
+  }  ).addTo(map);
+  controlLayers.addOverlay(populationbyblock, 'Population by Block');
+});
+ 
+  // City Boundary
+       $.getJSON("City_Boundaries.geojson",function(data){
+          
+          function polyStyle(feature) {
+              return {
+                  fillColor: '#FFEDA0',
+                  color: 'black',
+                  weight: 6,
+                  
+                  
+              };
+          }
+    // add GeoJSON layer to the map once the file is loaded
+    L.geoJson(data, {style: polyStyle}).addTo(map);
+  });
+  
+          // Surface Water Area
+      $.getJSON("Surface_Area_Water.geojson",function(data){
+          
+          function polyStyle(feature) {
+              return {
+                  fillColor: '#3AB2FA',
+                  weight: 1,
+                  opacity: 0.8,
+                  
+              };
+          }
+          function forEachFeature(feature, layer) {
+
+            var popupContent = "<p><b> Name: </b>"+feature.properties.FULLNAME+'</p>';
+
+            layer.bindPopup(popupContent);
+
+        }
+    // add GeoJSON layer to the map once the file is loaded
+    L.geoJson(data, {onEachFeature: forEachFeature, style: polyStyle}).addTo(map);
+  });
+
+// Tampa Road
+  $.getJSON("Tampa_Road.geojson",function(data){
+          
+          function polyStyle(feature) {
+              return {
+                  color: 'BLACK',
+                  weight: 1,
+                  opacity: 0.2,
+                  
+              };
+          }
+          function forEachFeature(feature, layer) {
+
+            var popupContent = "<p><b> Road Name: </b>"+feature.properties.FULLNAME+'</p>';
+
+            layer.bindPopup(popupContent);
+
+        }
+    // add GeoJSON layer to the map once the file is loaded
+    L.geoJson(data, {onEachFeature: forEachFeature, style: polyStyle}).addTo(map);
+  });
+       
+       // Evacuation Route 
+  $.getJSON("Evacuation_Routes.geojson",function(data){
+          
+          function polyStyle(feature) {
+              return {
+                  color: 'green',
+                  weight: 5,
+                //   opacity: 0.1,
+                  
+              };
+          }
+          function forEachFeature(feature, layer) {
+
+            var popupContent = "<p><b> Evacuation Route: </b>"+feature.properties.STREET+'</p>';
+
+            layer.bindPopup(popupContent);
+
+        }
+    // add GeoJSON layer to the map once the file is loaded
+    L.geoJson(data, {onEachFeature: forEachFeature, style: polyStyle}).addTo(map);
+      });
+
+
+
+
+  </script>
+    
+</body>
+</html>
