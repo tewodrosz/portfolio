@@ -27,14 +27,24 @@ crossorigin="anonymous"></script>
 <div id="sidebar">
   <h1> Tampa Flood Hazard Map</h1>
      <p align="justify">The City of Tampa is the largest city in Hillsborough County, is the county seat and is the third most populous city in Florida. It is located on the west coast of Florida, approximately 200 miles northwest of Miami, 180 southwest of Jacksonville, and 20 miles northeast of St. Petersburg. The population of the city represents approximately one-third of the total population of Hillsborough County ("CityofTampa", 2019). There are several causes of flooding within the city of Tampa. The most frequent type of flooding, localized flooding, is caused by rainy season thunderstorms and tropical storms ("Flooding", 2019)".
-        A Flood Zone is a geographical area that is rated to reflect the severity or type offloading in that area. </p><br>
-      <p align="justify">Some of the data’s related to Flooding and Infrastructure are available in county level and clip by using the city boundary. A critical facility provides services and functions essential to a community, especially during and after a disaster. Therefore, as a facility, I choose to incorporate in my Map Police stations, fire stations are needed for flood response activities before, during, and after a flood. Medical facilities like hospitals should be considered to avoid injury or death during a flood. Most of the time, Schools are used as shelters or evacuation centers; therefore, these facilities should be preventing from flooding. In addition to that, Fire prevention, evacuation, and rescue operations are common emergency response activities associated with flooding. The effectiveness and success of these efforts depend on readily available access for emergency vehicles. However, streets and roads are usually the first to be inundated in the event of a flood.</p><br>
+        A Flood Zone is a geographical area that is rated to reflect the severity or type offloading in that area. </p>
+      <p align="justify">Some of the data’s related to Flooding and Infrastructure are available in county level and clip by using the city boundary. A critical facility provides services and functions essential to a community, especially during and after a disaster. Therefore, as a facility, I choose to incorporate in my Map Police stations, fire stations are needed for flood response activities before, during, and after a flood. Medical facilities like hospitals should be considered to avoid injury or death during a flood. Most of the time, Schools are used as shelters or evacuation centers; therefore, these facilities should be preventing from flooding. In addition to that, Fire prevention, evacuation, and rescue operations are common emergency response activities associated with flooding. The effectiveness and success of these efforts depend on readily available access for emergency vehicles. However, streets and roads are usually the first to be inundated in the event of a flood. 
+        <br> The Flood hazard data is not accurate data and hard to understand for interpretation and to manage. However, according to the description and the data nature. I use ZONE_SUBTY (Zone Susceptibility) Attribute information to classify and Categories the city into 4 different flood which is
+        <br>
+            ▪ Flood Way <br>
+            ▪ 0.2 % Annual Chance of Flood<br>
+            ▪ Area of Minimal Hazard<br>
+            ▪ Coastal Flood (Which the Field is Null value, but I define)
+Therefore, by using the overlaying each layer, we can see which area is more susceptible to flood. Thus, the southern tip of the city is more susceptible to Coastal Flood, and these areas compared to other areas of city, the population density by block group and the housing is more in number compare to the other areas. Therefore, if the flooding is happening in those areas, the city administration should give priority evacuation the area marked with Circle and proper emergency response prior to other areas.
+      </p><br>
      <h2>Data Sources Links</h2>
     <li><a href="http://city-tampa.opendata.arcgis.com/datasets/tampa-boundary" class="button"> City Boundary, Road, Hospital, Police station, Fire Station, School</a></li>
     <li><a href=" https://www.census.gov/cgi-bin/geo/shapefiles/index.php" class="button"> Block Groups, Surface Water</a></li>
     <li><a href=" https://factfinder.census.gov/faces/nav/jsf/pages/index.xhtml" class="button"> Total Population, Housing units by block group</a></li>
-    <li><a href=" https://hazardsfema.maps.arcgis.com/apps/webappviewer/index.html?id=8b0adb51996444d4879338b5529aa9cd" class="button">Special Flood Hazard Areas (FEMA)</a></li>
+    <li><a href=" https://hazardsfema.maps.arcgis.com/apps/webappviewer/index.html?id=8b0adb51996444d4879338b5529aa9cd" class="button">Special Flood Hazard Areas (FEMA)</a></li><br>
+    <li><a href=" Flood Report T.pdf" class="button"><h3 align="left">For Futher Report Reading</h3> </a></li>
     <h3 align="right">By: Tewodros Zenebe</h3>
+    
 
   </div>
   
@@ -294,9 +304,9 @@ $.getJSON(populationbyblock, function (geoJson) {
     style: function(feature){
       var fillColor,
           data = feature.properties.ALAND;
-      if (data === "0") fillColor = "blue";
-      else fillColor = "Cyan";  // no data
-      return { color: "#3182bd", weight: 0, fillColor: fillColor, fillOpacity: 0.8 };
+      if (data === "0") fillColor = "#5DADE2";
+      else fillColor = "#5DADE2";  // no data
+      return { color: "#5DADE2", weight: 0, fillColor: fillColor, fillOpacity: 0.8 };
     },
     onEachFeature: function( feature, layer ){
       layer.bindPopup('<h4>Name:  '+feature.properties.FULLNAME+'</h4>' )
