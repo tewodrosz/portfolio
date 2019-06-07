@@ -63,6 +63,7 @@ Therefore, by using the overlaying each layer, we can see which area is more sus
   var tamparoads = 'Tampa_Road.geojson'
   var surfacewater = 'Surface_Area_Water.geojson'
   var floodprepare = 'Flood_Prepared_Priority.geojson'
+  var cityboudary = 'City_Boundaries.geojson'
   
   // load a tile layer
   // L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -104,8 +105,8 @@ Therefore, by using the overlaying each layer, we can see which area is more sus
             $.getJSON("Fire_Stations_City_of_Tampa.geojson",function(data){
     // add GeoJSON layer to the map once the file is loaded
           var fireIcon = L.icon({
-    iconUrl: 'fireicon.PNG',
-    iconSize: [50,40]
+     iconUrl: 'fireicon.PNG',
+     iconSize: [50,40]
   }); 
    var fireStationData = L.geoJson(data, {
        onEachFeature: function(feature, Fire_Stations_City_of_TampaLayer) {
@@ -282,10 +283,11 @@ $.getJSON(populationbyblock, function (geoJson) {
 });
 
   // City Boundary
-       $.getJSON("City_Boundaries.geojson",function(data){
-          
-          function polyStyle(feature) {
-              return {
+  
+  $.getJSON(cityboudary, function (geoJson) {
+  var cityboudary = L.geoJson(geoJson, {
+    style: function(feature){
+           return {
                   fillColor: '#FFEDA0',
                   color: 'black',
                   dashArray: '3',
@@ -293,11 +295,11 @@ $.getJSON(populationbyblock, function (geoJson) {
                   
                   
               };
-          }
-    // add GeoJSON layer to the map once the file is loaded
-    L.geoJson(data, {style: polyStyle}).addTo(map);
-  });
-  
+    },
+   
+  }  ).addTo(map);
+  controlLayers.addOverlay(cityboudary, 'Tampa City Boundary');
+});
   // Surface Water
   $.getJSON(surfacewater, function (geoJson) {
   var surfacewater = L.geoJson(geoJson, {
