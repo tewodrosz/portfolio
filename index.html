@@ -28,12 +28,13 @@ crossorigin="anonymous"></script>
   <h1> Tampa Flood Hazard Map</h1>
      <p align="justify">The City of Tampa is the largest city in Hillsborough County, is the county seat and is the third most populous city in Florida. It is located on the west coast of Florida, approximately 200 miles northwest of Miami, 180 southwest of Jacksonville, and 20 miles northeast of St. Petersburg. The population of the city represents approximately one-third of the total population of Hillsborough County ("CityofTampa", 2019). There are several causes of flooding within the city of Tampa. The most frequent type of flooding, localized flooding, is caused by rainy season thunderstorms and tropical storms ("Flooding", 2019)".
         A Flood Zone is a geographical area that is rated to reflect the severity or type offloading in that area. </p><br>
-            <p align="justify">Some of the data’s related to Flooding and Infrastructure are available in county level and clip by using the city boundary. A critical facility provides services and functions essential to a community, especially during and after a disaster. Therefore, as a facility, I choose to incorporate in my Map Police stations, fire stations are needed for flood response activities before, during, and after a flood. Medical facilities like hospitals should be considered to avoid injury or death during a flood. Most of the time, Schools are used as shelters or evacuation centers; therefore, these facilities should be preventing from flooding. In addition to that, Fire prevention, evacuation, and rescue operations are common emergency response activities associated with flooding. The effectiveness and success of these efforts depend on readily available access for emergency vehicles. However, streets and roads are usually the first to be inundated in the event of a flood.</p><br>
+      <p align="justify">Some of the data’s related to Flooding and Infrastructure are available in county level and clip by using the city boundary. A critical facility provides services and functions essential to a community, especially during and after a disaster. Therefore, as a facility, I choose to incorporate in my Map Police stations, fire stations are needed for flood response activities before, during, and after a flood. Medical facilities like hospitals should be considered to avoid injury or death during a flood. Most of the time, Schools are used as shelters or evacuation centers; therefore, these facilities should be preventing from flooding. In addition to that, Fire prevention, evacuation, and rescue operations are common emergency response activities associated with flooding. The effectiveness and success of these efforts depend on readily available access for emergency vehicles. However, streets and roads are usually the first to be inundated in the event of a flood.</p><br>
      <h2>Data Sources Links</h2>
     <li><a href="http://city-tampa.opendata.arcgis.com/datasets/tampa-boundary" class="button"> City Boundary, Road, Hospital, Police station, Fire Station, School</a></li>
     <li><a href=" https://www.census.gov/cgi-bin/geo/shapefiles/index.php" class="button"> Block Groups, Surface Water</a></li>
     <li><a href=" https://factfinder.census.gov/faces/nav/jsf/pages/index.xhtml" class="button"> Total Population, Housing units by block group</a></li>
     <li><a href=" https://hazardsfema.maps.arcgis.com/apps/webappviewer/index.html?id=8b0adb51996444d4879338b5529aa9cd" class="button">Special Flood Hazard Areas (FEMA)</a></li>
+    <h3 align="right">By: Tewodros Zenebe</h3>
 
   </div>
   
@@ -59,13 +60,12 @@ crossorigin="anonymous"></script>
   //     attribution: 'T&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
   //    minZoom: 1
   //   }).addTo(map);
-  L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.{ext}', {
-	attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-	subdomains: 'abcd',
-	minZoom: 1,
-	maxZoom: 16,
-	ext: 'jpg'
-}).addTo(map);;
+  L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+            maxZoom: 18,
+            id: 'mapbox.streets',
+            accessToken: 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw',
+  }).addTo(map);
 // Police Station
 
        $.getJSON("policestation.geojson",function(data){
@@ -248,29 +248,6 @@ $.getJSON(housing, function (geoJson) {
   controlLayers.addOverlay(housing, 'Housing by Block');
 });
 
-// // Total Population
-// $.getJSON(populationbyblock, function (geoJson) {
-//   var populationbyblock = L.geoJson(geoJson, {
-//     style: function(feature){
-//       var fillColor,
-//           data = feature.properties.NAMELSAD;
-//      if (data === "Block Group 1") fillColor = "#800026";
-//       else if (data === "Block Group 2" ) fillColor = "#e6550d";
-//       else if (data === "Block Group 3" ) fillColor = "#E31A1C";
-//       else if (data === "Block Group 4" ) fillColor = "#3AB2FA";
-//       else if (data === "Block Group 5" ) fillColor = "#E90A1D";
-//       else if (data === "Block Group 6" ) fillColor = "yellow";
-//       else if (data === "Block Group 6" ) fillColor = "black";
-//       else fillColor = "#FFEDA0";  // no data
-//       return { color: "white", weight: 2, dashArray: '3', fillColor: fillColor, fillOpacity: .7 };
-//     },
-//     onEachFeature: function( feature, layer ){
-//       layer.bindPopup('<h4>BLOCK NAME:  '+feature.properties.NAMELSAD+'</h4><h4>Houisng Unit: '+feature.properties.Housing_Un+'</h4><h4>Total Population: '+feature.properties.Total_popu+'</h4>' )
-//       }
-//   }  ).addTo(map);
-//   controlLayers.addOverlay(populationbyblock, 'Population by Block');
-// });
- 
 // Total Population 2
 $.getJSON(populationbyblock, function (geoJson) {
   var populationbyblock = L.geoJson(geoJson, {
@@ -301,7 +278,8 @@ $.getJSON(populationbyblock, function (geoJson) {
               return {
                   fillColor: '#FFEDA0',
                   color: 'black',
-                  weight: 6,
+                  dashArray: '3',
+                  weight: 3,
                   
                   
               };
@@ -310,16 +288,13 @@ $.getJSON(populationbyblock, function (geoJson) {
     L.geoJson(data, {style: polyStyle}).addTo(map);
   });
   
+  // Surface Water
   $.getJSON(surfacewater, function (geoJson) {
   var surfacewater = L.geoJson(geoJson, {
     style: function(feature){
       var fillColor,
           data = feature.properties.ALAND;
       if (data === "0") fillColor = "blue";
-      // else if (data === "Coastal And Floodways" ) fillColor = "#de2d26";
-      // else if (data === "AREA OF MINIMAL FLOOD HAZARD" ) fillColor = "#a1d99b";
-      // else if (data === "1% Anual Chance" ) fillColor = "#feb24c";
-      // else if (data === "0.2 PCT ANNUAL CHANCE FLOOD HAZARD" ) fillColor = "#e0f3db";
       else fillColor = "Cyan";  // no data
       return { color: "#3182bd", weight: 0, fillColor: fillColor, fillOpacity: 0.8 };
     },
@@ -330,7 +305,7 @@ $.getJSON(populationbyblock, function (geoJson) {
   controlLayers.addOverlay(surfacewater, 'Surface Water');
 });
 
-
+// Flood Preaparation Priority Areas
 $.getJSON(floodprepare, function (geoJson) {
   var floodprepare = L.geoJson(geoJson, {
     style: function(feature){
@@ -350,27 +325,7 @@ $.getJSON(floodprepare, function (geoJson) {
   }  ).addTo(map);
   controlLayers.addOverlay(floodprepare, 'Flood Prepare Priority Area');
 });
-      //     // Surface Water Area
-      // $.getJSON("Surface_Area_Water.geojson",function(data){
-          
-      //     function polyStyle(feature) {
-      //         return {
-      //             fillColor: 'blue',
-      //             weight: 2,
-      //             opacity: 0.9,
-                  
-      //         };
-      //     }
-      //     function forEachFeature(feature, layer) {
-
-      //       var popupContent = "<p><b> Name: </b>"+feature.properties.FULLNAME+'</p>';
-
-      //       layer.bindPopup(popupContent);
-
-      //   }
-    // add GeoJSON layer to the map once the file is loaded
-  //   L.geoJson(data, {onEachFeature: forEachFeature, style: polyStyle}).addTo(map);
-  // });
+     
 
 // Tampa Road
   $.getJSON("Tampa_Road.geojson",function(data){
@@ -393,7 +348,8 @@ $.getJSON(floodprepare, function (geoJson) {
     // add GeoJSON layer to the map once the file is loaded
     L.geoJson(data, {onEachFeature: forEachFeature, style: polyStyle}).addTo(map);
   });
-    
+
+// Evacuation Route    
 $.getJSON(evacuationroute, function (geoJson) {
   var evacuationroute = L.geoJson(geoJson, {
     style: function(feature){
